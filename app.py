@@ -104,8 +104,12 @@ def results(job_id):
         api_url = f"{PUBTRENDS_API}/get_result_api?jobid={job_id}&query={quote(query)}"
         response = requests.get(api_url)
         if response.status_code == 200:
-            data = response.json()
-            return f"Successfully got a json response!!! {json.dumps(data, indent=2)}"
+            return render_template(
+                "results.html",
+                search_query=query,
+                pubtrends_result=f"{PUBTRENDS_API}/result?query={quote(query)}&source=Pubmed&limit=1000&sort=most_cited&noreviews=on&min_year=&max_year=&jobid={job_id}")
+            # data = response.json()
+            # return f"Successfully got a json response!!! {json.dumps(data, indent=2)}"
         return render_template('error.html', message="Something went wrong")
     except:
         return render_template('error.html', message="Exception occurred")
