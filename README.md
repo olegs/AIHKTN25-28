@@ -68,3 +68,10 @@ Style: The image should be in the style of the "Dexter's Laboratory" cartoon.
 Additional: It should use pale colors. There should be only one human on the image.
 Main Ideas: "Something went badly wrong in experiment."
 ```
+
+Computing
+```
+Generate an image with a huge text "Computing" and "Google API" on it.
+Style: Pale colors. The image should be in the style of the "Dexter's Laboratory" cartoon. 
+Additional: There should be a pipeline with calls to Google API on it.
+```

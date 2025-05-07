@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search in Progress - AIHKTN25-28</title>
+    <title>Progress - Google-powered PubTrends scientific navigator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -51,11 +51,17 @@
     </style>
 </head>
 <body>
-    <h1>AIHKTN25-28</h1>
-
     <div class="progress-container">
-        <div class="loader"></div>
-        <p>Your search {{ search_query }} is being processed.</p>
+        <h1>{{ search_query }}</h1>
+        <img src="/static/computing.png" alt="Computing" style="max-width: 100%; height: auto;">
+        <div id="progress">
+            <ul style="list-style-type: none; padding: 0; text-align: left; max-width: 400px; margin: 0 auto;">
+                <li style="margin: 10px 0;">
+                    <span style="display: inline-block; width: 10px; height: 10px; border: 2px solid #3498db;
+                                        border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite; margin-right: 10px;"></span>
+                Staring analysis...
+            </li></ul>
+        </div>
     </div>
 
     <a href="/" class="back-link">Cancel and go back to Search</a>
@@ -68,9 +74,35 @@
             fetch(`/check_status/${jobId}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.status === 'success') {
+                    if (data.status === 'pending') {
+                        // Update progress information
+                        const progressDiv = document.getElementById('progress');
+                        let progressHTML = '';
+                        if (data.progress && data.progress.length > 0) {
+                            progressHTML = '<ul style="list-style-type: none; padding: 0; text-align: left; max-width: 400px; margin: 0 auto;">';
+
+                            data.progress.forEach(item => {
+                                const [text, status] = item;
+                                if (status === 'complete') {
+                                    // Render completed task with tick
+                                    progressHTML += `<li style="margin: 10px 0;"><span style="color: green; margin-right: 10px;">✓</span>${text}</li>`;
+                                } else {
+                                    // Render active task with spinner
+                                    progressHTML += `<li style="margin: 10px 0;">
+                                        <span style="display: inline-block; width: 10px; height: 10px; border: 2px solid #3498db; 
+                                        border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite; margin-right: 10px;"></span>
+                                        ${text}
+                                    </li>`;
+                                }
+                            });
+
+                            progressHTML += '</ul>';
+                        }
+
+                        progressDiv.innerHTML = progressHTML;
+                    } else if (data.status === 'success') {
                         window.location.href = `/results/${jobId}`;
-                    } else if (data.status !== 'pending') {
+                    } else {
                         window.location.href = '/error';
                     }
                     // If still in progress, continue checking
@@ -82,7 +114,7 @@
 
         // Initial check after 2 seconds
         setTimeout(checkStatus, 2000);
-        
+
         // Then check every 2 seconds
         setInterval(checkStatus, 2000);
     </script>

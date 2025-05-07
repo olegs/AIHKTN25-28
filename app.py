@@ -85,8 +85,13 @@ def check_status(job_id):
                 return {'status': 'success'}
             elif data['status'] == 'failed':
                 return {'status': 'failed'}
+            else:
+                # Return progress information if available
+                return {'status': 'pending',
+                        'progress': [('Sent the query to PubTrends API', 'complete'),
+                                     ('Waiting for the results', 'pending')]}
 
-        return {'status': 'pending'}
+        return {'status': 'pending', 'progress': [('Starting analysis', 'pending')]}
     except:
         return {'status': 'failed'}
 
