@@ -137,7 +137,7 @@ def make_summarize_model_sync_call(
                 entity["total_connections"] = sum(
                     connections_by_pid.get(pid, 0) for pid in entity.get("cited_in", [])
                 )
-            print("✅ Entities Extracted:")
+            print("✅ Entities Extracted")
             search_queries[pubtrends_job_id][SUMMARIZE_STEP + "_RESULT"] = summarized_data
             search_queries[pubtrends_job_id]['progress'][SUMMARIZE_STEP] = STEP_COMPLETE
             return
