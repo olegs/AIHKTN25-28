@@ -133,13 +133,13 @@
     </div>
 
     <div class="search-type">
-        <span class="search-type-label">New shiny semantic search</span>
+        <span class="search-type-label">Good old text search</span>
         <label class="switch">
             <input type="checkbox" id="searchTypeToggle">
             <span class="slider"></span>
         </label>
-        <span class="search-type-label">Good old text search</span>
         <input type="hidden" name="search_type" id="searchTypeInput" value="text">
+        <span class="search-type-label">New shiny semantic search</span>
     </div>
 </form>
 
@@ -156,7 +156,7 @@
 
         // Update hidden input when toggle changes
         toggle.addEventListener('change', function () {
-            input.value = this.checked ? 'text' : 'semantic';
+            input.value = this.checked ? 'semantic' : 'text';
         });
     });
 </script>

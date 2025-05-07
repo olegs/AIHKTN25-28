@@ -22,11 +22,7 @@ def search():
                 f"Text search result 3 for: {search_query}"
             ]
         else:
-            search_results = [
-                f"Semantic search result 1 for: {search_query}",
-                f"Semantic search result 2 for: {search_query}",
-                f"Semantic search result 3 for: {search_query}"
-            ]
+            search_results = ["Not implemented yet"]
 
     return render_template('results.html', 
                           search_query=search_query, 
