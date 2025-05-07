@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - AIHKTN25-28</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        .results-container {
+            margin-top: 30px;
+        }
+        .result-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+            color: #2196F3;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .search-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        .search-type {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 5px;
+        }
+        .semantic {
+            background-color: #e1f5fe;
+            color: #0288d1;
+        }
+        .text {
+            background-color: #f1f8e9;
+            color: #689f38;
+        }
+    </style>
+</head>
+<body>
+    <h1>AIHKTN25-28</h1>
+
+    <div class="search-info">
+        <p>Search results for: <strong>{{ search_query }}</strong></p>
+        <p>
+            <span class="search-type {{ 'semantic' if search_type == 'semantic' else 'text' }}">
+                {{ "Text Search" if search_type == 'text' else "Semantic Search" }}
+            </span>
+        </p>
+    </div>
+
+    <div class="results-container">
+        <h2>Search Results</h2>
+        {% if search_results %}
+            {% for result in search_results %}
+            <div class="result-item">
+                {{ result }}
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center;">No results found for your query.</p>
+        {% endif %}
+    </div>
+
+    <a href="/" class="back-link">← Back to Search</a>
+</body>
+</html>
