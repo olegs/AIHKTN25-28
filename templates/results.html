@@ -43,6 +43,9 @@
                 <h3 class="pb-2 border-bottom">Categories</h3>
                 <ul class="nav flex-column mt-3">
                     <li class="nav-item mb-2">
+                        <a class="nav-link" href="#topics">Topics</a>
+                    </li>
+                    <li class="nav-item mb-2">
                         <a class="nav-link" href="#genes">Genes</a>
                     </li>
                     <li class="nav-item mb-2">
@@ -69,6 +72,18 @@
             </div>
 
             <h2 class="mt-5 pb-2 border-bottom">Summaries</h2>
+            <div id="topics" class="mt-4 pt-2">
+                <h3>Topics</h3>
+                {% for topics_name, title, summary in topics_summaries %}
+                <p>
+                    <h4>Topic {{topics_name}}</h4>
+                    <strong>{{title}}</strong>
+                    <hr style='border: none; border-top: 1px dashed #ccc;'/>
+                    {{summary}}
+                </p>
+                <hr style='border: none; border-top: 1px dashed #ccc;'/>
+                {% endfor %}
+            </div>
 
             <div id="genes" class="mt-4 pt-2">
                 <h3>Genes</h3>

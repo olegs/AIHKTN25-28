@@ -157,7 +157,7 @@ def results(job_id):
         substances_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_SUBSTANCES])
         conditions_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_CONDITIONS])
         proteins_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_PROTEINS])
-        topics_categories = search_queries[job_id][SUMMARIZE_STEP + "_RESULT2"]
+        topics_summaries = search_queries[job_id][SUMMARIZE_STEP + "_RESULT2"]
         # TODO fix me
         return render_template(
             "results.html",
@@ -166,7 +166,8 @@ def results(job_id):
             genes_summaries=genes_summaries,
             substances_summaries=substances_summaries,
             conditions_summaries=conditions_summaries,
-            proteins_summaries=proteins_summaries)
+            proteins_summaries=proteins_summaries,
+            topics_summaries=topics_summaries)
     except Exception as e:
         print(e)
         return render_template('error.html', message="Exception occurred")
