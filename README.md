@@ -51,13 +51,20 @@ Additional Details: Ensure the image captures the essence of a scientific enviro
 
 ![image](assets/3.png)
 
-Jumbotron
----------
-Prompt:
+Jumbotron prompt
 ```
 This should be a jumbotron image. 
 Style: The image should be in the style of the "Dexter's Laboratory" cartoon. 
 Additional: It should use pale colors. There should be only one human on the image.
 Main Ideas: "1. Fast concise representation of the scientific area. 2.  Control over the sources and facts."
 It should show the complex pipeline of API calls to Google cloud.
+```
+
+
+Error prompt
+```
+Generate an image with huge text "ERROR". 
+Style: The image should be in the style of the "Dexter's Laboratory" cartoon. 
+Additional: It should use pale colors. There should be only one human on the image.
+Main Ideas: "Something went badly wrong in experiment."
 ```

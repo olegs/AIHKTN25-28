@@ -35,7 +35,7 @@ def search():
             search_queries[job_id] = search_query
             return redirect(url_for('progress', job_id=job_id))
         else:
-            return "Failed to make API call to PubTrends"
+            return render_template('error.html', "Failed to make API call to PubTrends")
     else:
         # For semantic search, use the existing placeholder
         search_results = ["Not implemented yet"]
@@ -93,7 +93,7 @@ def check_status(job_id):
 @app.route('/results/<job_id>')
 def results(job_id):
     if job_id not in search_queries:
-        return "Result not found"
+        return render_template('error.html', message="Result not found")
     try:
         query = search_queries[job_id]
         api_url = f"{PUBTRENDS_API}/get_result_api?jobid={job_id}&query={quote(query)}"
@@ -101,9 +101,13 @@ def results(job_id):
         if response.status_code == 200:
             data = response.json()
             return f"Successfully got a json response!!! {json.dumps(data, indent=2)}"
-        return "Something went wrong"
+        return render_template('error.html', message="Something went wrong")
     except:
-        return "Error occurred", 500
+        return render_template('error.html', message="Exception occurred")
+
+@app.route('/error')
+def error():
+    return render_template('error.html', message="Something went wrong")
 
 
 if __name__ == '__main__':

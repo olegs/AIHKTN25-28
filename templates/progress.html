@@ -58,7 +58,7 @@
         <p>Your search {{ search_query }} is being processed.</p>
     </div>
 
-    <a href="/" class="back-link">← Cancel and go back to Search</a>
+    <a href="/" class="back-link">Cancel and go back to Search</a>
 
     <script>
         // Check the status of the job every 2 seconds
@@ -71,13 +71,12 @@
                     if (data.status === 'success') {
                         window.location.href = `/results/${jobId}`;
                     } else if (data.status !== 'pending') {
-                        alert('Search failed. Please try again.');
-                        window.location.href = '/';
+                        window.location.href = '/error';
                     }
                     // If still in progress, continue checking
                 })
                 .catch(error => {
-                    console.error('Error checking status:', error);
+                    window.location.href = '/error';
                 });
         }
 
