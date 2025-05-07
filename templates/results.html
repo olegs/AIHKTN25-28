@@ -8,6 +8,28 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .collapse-content {
+            display: none;
+            margin-top: 5px;
+        }
+
+        .toggle-button {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+
+        th {
+            text-align: left;
+        }
+    </style>
+    <script>
+        function toggleCollapse(id) {
+            const x = document.getElementById(id);
+            x.style.display = (x.style.display === "none") ? "block" : "none";
+        }
+    </script>
 </head>
 <body>
 <div class="container-fluid">
@@ -47,28 +69,6 @@
 
             <div id="genes" class="mt-4 pt-2">
                 <h3>Genes</h3>
-                <style>
-                    .collapse-content {
-                        display: none;
-                        margin-top: 5px;
-                    }
-
-                    .toggle-button {
-                        cursor: pointer;
-                        color: blue;
-                        text-decoration: underline;
-                    }
-
-                    th {
-                        text-align: left;
-                    }
-                </style>
-                <script>
-                    function toggleCollapse(id) {
-                        const x = document.getElementById(id);
-                        x.style.display = (x.style.display === "none") ? "block" : "none";
-                    }
-                </script>
                 <table id="genes_summaries" class="table table-sm table-bordered table-striped">
                     <thead>
                     <tr>
@@ -100,17 +100,95 @@
 
             <div id="substances" class="mt-4 pt-2">
                 <h3>Substances</h3>
-                <p>Substance-related information from your search will appear here.</p>
+                <table id="substances_summaries" class="table table-sm table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Context</th>
+                        <th>Importance</th>
+                        <th>Papers</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in substances_summaries %}
+                    <tr>
+                        <td>{{idx}}</td>
+                        <td>{{entity_name}}</td>
+                        <td>{{entity_context}}</td>
+                        <td>{{entity_total_connections}}</td>
+                        <td>
+                        <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
+                            Show Papers ({{entities_len}})
+                        </span>
+                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links}}</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
             <div id="conditions" class="mt-4 pt-2">
                 <h3>Conditions</h3>
-                <p>Condition-related information from your search will appear here.</p>
+                <table id="conditions_summaries" class="table table-sm table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Context</th>
+                        <th>Importance</th>
+                        <th>Papers</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in conditions_summaries %}
+                    <tr>
+                        <td>{{idx}}</td>
+                        <td>{{entity_name}}</td>
+                        <td>{{entity_context}}</td>
+                        <td>{{entity_total_connections}}</td>
+                        <td>
+                        <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
+                            Show Papers ({{entities_len}})
+                        </span>
+                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links}}</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
             <div id="proteins" class="mt-4 pt-2">
                 <h3>Proteins</h3>
-                <p>Protein-related information from your search will appear here.</p>
+                <table id="proteins_summaries" class="table table-sm table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Context</th>
+                        <th>Importance</th>
+                        <th>Papers</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in proteins_summaries %}
+                    <tr>
+                        <td>{{idx}}</td>
+                        <td>{{entity_name}}</td>
+                        <td>{{entity_context}}</td>
+                        <td>{{entity_total_connections}}</td>
+                        <td>
+                        <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
+                            Show Papers ({{entities_len}})
+                        </span>
+                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links}}</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
                 <div class="col text-center">
                     <a class="btn btn-success" href="/">Back Home</a>

@@ -5,8 +5,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import requests
 from urllib.parse import quote
 from async_tasks import start_summarize_async_step
-from util import PUBTRENDS_API, STEP_COMPLETE, PUBTRENDS_STEP, START_STEP, STEP_NOT_STARTED, STEP_PENDING, \
-    SUMMARIZE_STEP, STEP_ERROR, create_text_steps
+from config import *
 
 app = Flask(__name__)
 
@@ -120,30 +119,42 @@ def results(job_id):
         query = search_queries[job_id]['search_query']
         pubtrends_url = f"{PUBTRENDS_API}/result?query={quote(query)}" \
               f"&source=Pubmed&limit=1000&sort=most_cited&noreviews=on&min_year=&max_year=&jobid={job_id}"
-        genes_summaries = []
-        entities = search_queries[job_id][SUMMARIZE_STEP + "_RESULT"]
-        for idx, entity in enumerate(sorted(entities, key=lambda g: g['total_connections'], reverse=True), start=1):
-            collapse_id = f"collapse-{idx}"
-            paper_links = "<br>".join(
-                f'<a href="/paper/{pid}" target="_blank">{pid}</a>' for pid in entity["cited_in"]
-            )
-            # idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id
-            genes_summaries.append((
-                idx,
-                entity['name'],
-                entity['context'],
-                entity['total_connections'],
-                paper_links,
-                len(entity['cited_in']),
-                collapse_id))
+        summarized_categories = search_queries[job_id][SUMMARIZE_STEP + "_RESULT"]
+        genes_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_GENES])
+        substances_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_SUBSTANCES])
+        conditions_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_CONDITIONS])
+        proteins_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_PROTEINS])
         return render_template(
             "results.html",
             search_query=query,
             pubtrends_result=pubtrends_url,
-            genes_summaries=genes_summaries)
+            genes_summaries=genes_summaries,
+            substances_summaries=substances_summaries,
+            conditions_summaries=conditions_summaries,
+            proteins_summaries=proteins_summaries)
     except Exception as e:
         print(e)
         return render_template('error.html', message="Exception occurred")
+
+
+def prepare_entities_summary(entities):
+    entities_summary = []
+    for idx, entity in enumerate(sorted(entities, key=lambda g: g['total_connections'], reverse=True), start=1):
+        collapse_id = f"collapse-{idx}"
+        paper_links = "<br>".join(
+            f'<a href="/paper/{pid}" target="_blank">{pid}</a>' for pid in entity["cited_in"]
+        )
+        # idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id
+        entities_summary.append((
+            idx,
+            entity['name'],
+            entity['context'],
+            entity['total_connections'],
+            paper_links,
+            len(entity['cited_in']),
+            collapse_id))
+    return entities_summary
+
 
 @app.route('/error')
 def error():

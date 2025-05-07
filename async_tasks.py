@@ -5,7 +5,7 @@ import numpy as np
 import requests
 
 from pubtrends.data import AnalysisData
-from util import PUBTRENDS_API, GOOGLE_SUMMARIZE_CATEGORIES_ENDPOINT, SUMMARIZE_STEP, STEP_COMPLETE, STEP_ERROR
+from config import *
 
 
 def start_summarize_async_step(search_queries, pubtrends_job_id):
@@ -67,31 +67,34 @@ def make_summarize_model_sync_call(
     # Convert to formatted string for LLM
     abstracts_json = json.dumps(abstract_entries, ensure_ascii=False, indent=2)
 
+    summarized_categories = {}
     # System prompt enum (must match server-side allowed value), here are represented all types
-    si_mode = "GENES_EXTRACTION"
-    # si_mode = "SUBSTANCES_EXTRACTION"
-    # si_mode = "CONDITIONS_EXTRACTION"
-    # si_mode = "PROTEINS_EXTRACTION"
-
-    # Make the POST request with abstracts and si_mode
-    try:
-        response = requests.post(
-            f"{GOOGLE_SUMMARIZE_CATEGORIES_ENDPOINT}?si_mode={si_mode}",
-            json=abstracts_json,
-            headers={"Content-Type": "application/json"}
-        )
-        # Handle response
-        if response.status_code == 200:
-            summarized_data = response.json()
-            connections_by_pid = dict(zip(highly_connected_df['id'], highly_connected_df['connections']))
-            for entity in summarized_data:
-                entity["total_connections"] = sum(
-                    connections_by_pid.get(pid, 0) for pid in entity.get("cited_in", [])
-                )
-            print("✅ Entities Extracted")
-            search_queries[pubtrends_job_id][SUMMARIZE_STEP + "_RESULT"] = summarized_data
-            search_queries[pubtrends_job_id]['progress'][SUMMARIZE_STEP] = STEP_COMPLETE
+    for si_mode in [GOOGLE_SUMMARIZE_CATEGORY_GENES,
+                    GOOGLE_SUMMARIZE_CATEGORY_SUBSTANCES,
+                    GOOGLE_SUMMARIZE_CATEGORY_CONDITIONS,
+                    GOOGLE_SUMMARIZE_CATEGORY_PROTEINS]:
+        print(f"Summarizing category {si_mode}...")
+        try:
+            # Make the POST request with abstracts and si_mode
+            response = requests.post(
+                f"{GOOGLE_SUMMARIZE_CATEGORIES_ENDPOINT}?si_mode={si_mode}",
+                json=abstracts_json,
+                headers={"Content-Type": "application/json"}
+            )
+            # Handle response
+            if response.status_code == 200:
+                summarized_data = response.json()
+                connections_by_pid = dict(zip(highly_connected_df['id'], highly_connected_df['connections']))
+                for entity in summarized_data:
+                    entity["total_connections"] = sum(
+                        connections_by_pid.get(pid, 0) for pid in entity.get("cited_in", [])
+                    )
+                summarized_categories[si_mode] = summarized_data
+                print(f"✅{si_mode} Entities Extracted")
+        except Exception as e:
+            print(e)
+            search_queries[pubtrends_job_id]['progress'][SUMMARIZE_STEP] = STEP_ERROR
             return
-    except Exception as e:
-        print(e)
-        search_queries[pubtrends_job_id]['progress'][SUMMARIZE_STEP] = STEP_ERROR
+    search_queries[pubtrends_job_id][SUMMARIZE_STEP + "_RESULT"] = summarized_categories
+    search_queries[pubtrends_job_id]['progress'][SUMMARIZE_STEP] = STEP_COMPLETE
+
