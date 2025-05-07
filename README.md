@@ -75,3 +75,17 @@ Generate an image with a huge text "Computing" and "Google API" on it.
 Style: Pale colors. The image should be in the style of the "Dexter's Laboratory" cartoon. 
 Additional: There should be a pipeline with calls to Google API on it.
 ```
+
+Persona Girl
+```
+A black colored girl who works as a Doctor professor in univerity Use the Dexter lab cartoon like style for the image. No background and no other subjects on the foreground.
+Make it ultimately funny. 
+```
+
+Persona Boy
+```
+A chinese boy who works as a Doctor professor in univerity Use the Dexter lab cartoon like style for the image. 
+No background and no other subjects on the foreground.
+Make it ultimately funny. 
+```
+
