@@ -157,6 +157,8 @@ def results(job_id):
         substances_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_SUBSTANCES])
         conditions_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_CONDITIONS])
         proteins_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_PROTEINS])
+        topics_categories = search_queries[job_id][SUMMARIZE_STEP + "_RESULT2"]
+        # TODO fix me
         return render_template(
             "results.html",
             search_query=query,
