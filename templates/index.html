@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIHKTN25-28</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .search-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .search-input {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            background-color: #45a049;
+        }
+        .search-type {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .search-type-options {
+            display: inline-block;
+            margin: 0 10px;
+        }
+        .search-type-label {
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+        .results-container {
+            margin-top: 30px;
+        }
+        .result-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <h1>AIHKTN25-28</h1>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+        <img src="/static/jumbotron.png" alt="Jumbotron" style="max-width: 100%; height: auto;">
+    </div>
+
+    <form method="POST" action="/" id="searchForm">
+        <div class="search-container">
+            <input type="text" name="search_query" class="search-input" placeholder="Enter your search query..." value="{{ search_query }}">
+            <button type="submit" class="search-button">Search</button>
+        </div>
+
+        <div class="search-type">
+            <span class="search-type-label">New shiny semantic search</span>
+            <label class="switch">
+                <input type="checkbox" id="searchTypeToggle">
+                <span class="slider"></span>
+            </label>
+            <span class="search-type-label">Good old text search</span>
+            <input type="hidden" name="search_type" id="searchTypeInput" value="{{ search_type }}">
+        </div>
+    </form>
+
+    {% if search_results %}
+    <div class="results-container">
+        <h2>Search Results</h2>
+        {% for result in search_results %}
+        <div class="result-item">
+            {{ result }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var toggle = document.getElementById('searchTypeToggle');
+            var input = document.getElementById('searchTypeInput');
+
+            // Set initial state based on server value
+            if (input.value === 'semantic') {
+                toggle.checked = true;
+            }
+
+            // Update hidden input when toggle changes
+            toggle.addEventListener('change', function() {
+                input.value = this.checked ? 'semantic' : 'text';
+            });
+        });
+    </script>
+</body>
+</html>
