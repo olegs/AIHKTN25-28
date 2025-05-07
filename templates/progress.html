@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search in Progress - AIHKTN25-28</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        .progress-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 80px;
+            height: 80px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .search-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+            color: #2196F3;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>AIHKTN25-28</h1>
+
+    <div class="progress-container">
+        <div class="loader"></div>
+        <p>Your search {{ search_query }} is being processed.</p>
+    </div>
+
+    <a href="/" class="back-link">← Cancel and go back to Search</a>
+
+    <script>
+        // Check the status of the job every 2 seconds
+        const jobId = "{{ job_id }}";
+
+        function checkStatus() {
+            fetch(`/check_status/${jobId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.href = `/results/${jobId}`;
+                    } else if (data.status !== 'pending') {
+                        alert('Search failed. Please try again.');
+                        window.location.href = '/';
+                    }
+                    // If still in progress, continue checking
+                })
+                .catch(error => {
+                    console.error('Error checking status:', error);
+                });
+        }
+
+        // Initial check after 2 seconds
+        setTimeout(checkStatus, 2000);
+        
+        // Then check every 2 seconds
+        setInterval(checkStatus, 2000);
+    </script>
+</body>
+</html>
