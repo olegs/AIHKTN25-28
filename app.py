@@ -38,7 +38,8 @@ def search():
                                           timestamp=time.time())
             return redirect(url_for('progress', job_id=job_id))
         else:
-            return render_template('error.html', "Failed to make API call to PubTrends")
+            return render_template('error.html',
+                                   message="Failed to make API call to PubTrends")
     else:
         # For semantic search, use the existing placeholder
         search_results = ["Not implemented yet"]
