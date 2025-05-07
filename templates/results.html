@@ -4,22 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results - Google-powered PubTrends scientific navigator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-    </style>
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Results</h1>
-    <div class="search-info">
-        <p>Query: <strong>{{ search_query }}</strong></p>
-        See the PubTrends base results <a href="{{ pubtrends_result }}">here.</a>
-    </div>
-        <h2>Categorise summaries</h2>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar py-3 shadow-sm" style="min-height: 100vh;">
+                <div class="position-sticky">
+                    <h3 class="pb-2 border-bottom">Categories</h3>
+                    <ul class="nav flex-column mt-3">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#genes">Genes</a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#substances">Substances</a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#conditions">Conditions</a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link" href="#proteins">Proteins</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
+            <!-- Main content -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-4">
+                <h1 class="mb-4">Results</h1>
+
+                <div class="alert border-start border-4">
+                    <p class="mb-1">Query: <strong>{{ search_query }}</strong></p>
+                    <p class="mb-0">See the PubTrends base results <a href="{{ pubtrends_result }}" class="fw-bold">here.</a></p>
+                </div>
+
+                <h2 class="mt-5 pb-2 border-bottom">Categorized Summaries</h2>
+
+                <div id="genes" class="mt-4 pt-2">
+                    <h3>Genes</h3>
+                    <p>Gene-related information from your search will appear here.</p>
+                </div>
+
+                <div id="substances" class="mt-4 pt-2">
+                    <h3>Substances</h3>
+                    <p>Substance-related information from your search will appear here.</p>
+                </div>
+
+                <div id="conditions" class="mt-4 pt-2">
+                    <h3>Conditions</h3>
+                    <p>Condition-related information from your search will appear here.</p>
+                </div>
+
+                <div id="proteins" class="mt-4 pt-2">
+                    <h3>Proteins</h3>
+                    <p>Protein-related information from your search will appear here.</p>
+                </div>
+            </div>
+        </div>
+        <a href="/" class="btn btn-success">Back Home</a>
+    </div>
 </body>
 </html>
