@@ -6,7 +6,7 @@ CREATE MODEL IF NOT EXISTS `aihktn25-28.dataset_eu_test.embedding_model002`
   );
 
 -- Create the embeddings table if it does not exist
--- NOTE: This operation may be time-consuming (~50 minutes)
+-- NOTE: This operation may be time-consuming if table does not exist (~50 minutes)
 CREATE TABLE IF NOT EXISTS `dataset_eu_test.embeddings_table` AS
 SELECT *
 FROM ML.GENERATE_EMBEDDING(
