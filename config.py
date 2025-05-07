@@ -11,6 +11,11 @@ GOOGLE_SUMMARIZE_CATEGORIES_ENDPOINT = os.getenv(
     ""
 )
 
+GOOGLE_SEMANTIC_SEARCH_ENDPOINT = os.getenv(
+    "GOOGLE_SEMANTIC_SEARCH_ENDPOINT",
+    ""
+)
+
 
 GOOGLE_SUMMARIZE_CATEGORY_GENES = "GENES_EXTRACTION"
 GOOGLE_SUMMARIZE_CATEGORY_SUBSTANCES = "SUBSTANCES_EXTRACTION"
@@ -28,6 +33,7 @@ PUBTRENDS_STEP = 'Waiting for the PubTrends analysis results'
 SUMMARIZE_STEP = 'Building summaries for categories'
 
 SEMANTIC_SEARCH_STEP = 'Semantic search'
+STEP_SEMANTIC_SEARCH_PASSED_FURTHER = 'semantic_search_ids_passed_further'
 
 def create_text_steps():
     return {
