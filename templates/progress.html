@@ -34,8 +34,8 @@
                 <div id="progress" class="mt-4">
                     <ul class="list-unstyled text-start mx-auto" style="max-width: 500px;">
                         <li class="mb-3">
-                            <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
-                            Starting analysis...
+                            <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+                            Starting analysis
                         </li>
                     </ul>
                 </div>
@@ -65,12 +65,17 @@
                                 if (status === 'complete') {
                                     // Render completed task with check icon
                                     progressHTML += `<li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>${text}</li>`;
-                                } else {
+                                } else if (status === 'pending') {
                                     // Render active task with spinner
                                     progressHTML += `<li class="mb-3">
-                                        <span class="spinner-border spinner-border-sm text-primary me-2" role="status"></span>
+                                        <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
                                         ${text}
                                     </li>`;
+                                } else {
+                                    progressHTML += `<li class="mb-3">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${text}
+                                    </li>`;
+
                                 }
                             });
 
@@ -91,10 +96,10 @@
         }
 
         // Initial check after 2 seconds
-        setTimeout(checkStatus, 2000);
+        setTimeout(checkStatus, 5000);
 
         // Then check every 2 seconds
-        setInterval(checkStatus, 2000);
+        setInterval(checkStatus, 5000);
     </script>
 </body>
 </html>
