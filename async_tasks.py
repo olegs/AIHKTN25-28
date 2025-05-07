@@ -50,55 +50,6 @@ def filter_by_connectivity(df, graph, percentile=75, max_count=None):
     return filtered_df
 
 
-def render_table(entities):
-    html = """
-    <style>
-        .collapse-content { display: none; margin-top: 5px; }
-        .toggle-button { cursor: pointer; color: blue; text-decoration: underline; }
-        th { text-align: left; }
-    </style>
-    <script>
-        function toggleCollapse(id) {
-            var x = document.getElementById(id);
-            x.style.display = (x.style.display === "none") ? "block" : "none";
-        }
-    </script>
-    <table border="1" style="border-collapse: collapse; width: 100%;">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Context</th>
-                <th>Total Connections</th>
-                <th>Papers</th>
-            </tr>
-        </thead>
-        <tbody>
-    """
-    for idx, entity in enumerate(sorted(entities, key=lambda g: g['total_connections'], reverse=True), start=1):
-        collapse_id = f"collapse-{idx}"
-        paper_links = "<br>".join(
-            f'<a href="/paper/{pid}" target="_blank">{pid}</a>' for pid in entity["cited_in"]
-        )
-        entities_len = len(entity['cited_in'])
-        html += f"""
-        <tr>
-            <td>{idx}</td>
-            <td>{entity['name']}</td>
-            <td>{entity['context']}</td>
-            <td>{entity['total_connections']}</td>
-            <td>
-                <span class="toggle-button" onclick="toggleCollapse('{collapse_id}')">
-                    Show Papers ({entities_len})
-                </span>
-                <div id="{collapse_id}" class="collapse-content">{paper_links}</div>
-            </td>
-        </tr>
-        """
-    html += "</tbody></table>"
-    return html
-
-
 def make_summarize_model_sync_call(
         search_queries, pubtrends_job_id,
         summarized_data
