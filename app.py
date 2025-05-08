@@ -182,8 +182,8 @@ def error():
 def cleanup_old_jobs():
     current_time = time.time()
     for job_id in list(search_queries.keys()):
-        # Remove jobs older than 1 hour
-        if current_time - search_queries[job_id]['timestamp'] > 3600:
+        # Remove jobs older than 24 hours
+        if current_time - search_queries[job_id]['timestamp'] > 24 * 3600:
             if job_id in search_queries:
                 del search_queries[job_id]
             del search_queries[job_id]
