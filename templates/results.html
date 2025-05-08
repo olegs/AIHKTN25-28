@@ -48,12 +48,30 @@
             x.style.display = (x.style.display === "none") ? "block" : "none";
         }
 
+        // Smooth scroll function for topic navigation
+        function scrollToTopic(event) {
+            event.preventDefault();
+            const targetId = event.target.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
         $(document).ready(function() {
             // Initialize DataTables for each table with pagination
             const genesTable = $('#genes_summaries').DataTable({});
             const substancesTable = $('#substances_summaries').DataTable({});
             const conditionsTable = $('#conditions_summaries').DataTable({});
             const proteinsTable = $('#proteins_summaries').DataTable({});
+
+            // Add smooth scrolling to topic navigation links
+            document.querySelectorAll('.topics-navigation a').forEach(link => {
+                link.addEventListener('click', scrollToTopic);
+            });
 
             // Fix for DataTables when shown in Bootstrap tabs
             $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -108,8 +126,18 @@
             <!-- Tab panes -->
             <div class="tab-content mt-3">
                 <div class="tab-pane fade show active" id="topics" role="tabpanel" aria-labelledby="topics-tab">
+                    <!-- Topics Navigation -->
+                    <div class="topics-navigation mb-4">
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for topics_name, title, summary in topics_summaries %}
+                            <a href="#topic-{{topics_name}}" class="btn btn-sm btn-outline-dark">Topic {{topics_name}}: {{title}}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <hr/>
+
                     {% for topics_name, title, summary in topics_summaries %}
-                    <div class="topic-item">
+                    <div class="topic-item" id="topic-{{topics_name}}">
                         <h4>Topic {{topics_name}}</h4>
                         <strong>{{title}}</strong>
                         <hr style='border: none; border-top: 1px dashed #ccc;'/>
