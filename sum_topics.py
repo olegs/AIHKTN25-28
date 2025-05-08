@@ -1,57 +1,75 @@
+import html
+import re
+
 import numpy as np
 import requests
-import re
-import html
+from tornado import concurrent
 
-from config import GOOGLE_MODEL_SUMMARIZE_TOPIC_TITLE_ENDPOINT, GOOGLE_MODEL_SUMMARIZE_TOPIC_ENDPOINT
+from config import GOOGLE_MODEL_SUMMARIZE_TOPIC_TITLE_ENDPOINT, GOOGLE_MODEL_SUMMARIZE_TOPIC_ENDPOINT, \
+    SUMMARY_TOPICS
 from pubtrends.topics import get_topics_description
 
 
-def summarize_topics(
-        *,
-        data,
-        topic_description_words=10,
-        force_topic_name=None,
-):
+def summarize_topics(data, summaries_storage):
+    connectivity_percentile_thr, preferred_count_per_topic, pubmed_cluster_names, topics_keywords = \
+        preprocess_summarize_topics(data)
+    summaries = [None] * len(pubmed_cluster_names)
+    summaries_storage[SUMMARY_TOPICS] = summaries
+    futures = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        for i, topic_name in enumerate(pubmed_cluster_names):
+            # Submit all batches to the executor
+            futures.append(executor.submit(
+                summarize_topic_and_save,
+                data, connectivity_percentile_thr, preferred_count_per_topic, topic_name, topics_keywords,
+                summaries, i
+            ))
+    # Process results as they complete
+    for _ in concurrent.futures.as_completed(futures):
+        pass
+
+
+def summarize_topic_and_save(
+        data, connectivity_percentile_thr, preferred_count_per_topic, topic_name, topics_keywords, summaries, i):
+    keyword_based_title, name, summary = \
+        summarize_topic(connectivity_percentile_thr, data,
+                        preferred_count_per_topic, topic_name, topics_keywords)
+    summaries[i] = (name, keyword_based_title, convert_to_html(summary))
+    print(f"✅{name} Topic Summaries Extracted")
+
+
+def summarize_topic(connectivity_percentile_thr, data, preferred_count_per_topic, topic_name, topics_keywords):
+    print(f"Processing topic {topic_name}")
+    topic_data = prepare_abstracts_for_topic(
+        data, topic_name,
+        connectivity_percentile_thr=connectivity_percentile_thr,
+        preferred_count_per_topic=preferred_count_per_topic
+    )
+    summary = prompt_summarize_abstracts(topic_data)
+    if summary:
+        topic_summary_data = {
+            "summary": summary,
+            "topics_keywords": [k for k, v in topics_keywords[topic_name]],
+        }
+        keyword_based_title = prompt_assign_title_to_summary(topic_summary_data)
+    else:
+        keyword_based_title = ""
+    # Render per topic
+    name = int(topic_name) + 1
+    return keyword_based_title, name, summary
+
+
+def preprocess_summarize_topics(data):
+    topic_description_words = 10
     preferred_count_per_topic = 50
     connectivity_percentile_thr = 50
-
     pubmed_cluster_names = sorted(data.df.comp.unique())
-
     topics_keywords = get_topics_description(
         data.df,
         data.corpus, data.corpus_tokens, data.corpus_counts,
         n_words=topic_description_words
     )
-
-    output = []
-    for topic_name in pubmed_cluster_names:
-        if (force_topic_name is not None) and (topic_name != force_topic_name):
-            continue
-
-        print(f"Processing topic {topic_name}")
-
-        topic_data = prepare_abstracts_for_topic(
-            data, topic_name,
-            connectivity_percentile_thr=connectivity_percentile_thr,
-            preferred_count_per_topic=preferred_count_per_topic
-        )
-
-        summary = prompt_summarize_abstracts(topic_data)
-
-        if summary:
-            topic_summary_data = {
-                "summary": summary,
-                "topics_keywords": [k for k, v in topics_keywords[topic_name]],
-            }
-            keyword_based_title = prompt_assign_title_to_summary(topic_summary_data)
-        else:
-            keyword_based_title = ""
-
-        # Render per topic
-        name = int(topic_name) + 1
-        output.append((name, keyword_based_title, convert_to_html(summary)))
-    return output
+    return connectivity_percentile_thr, preferred_count_per_topic, pubmed_cluster_names, topics_keywords
 
 
 def prepare_abstracts_for_topic(data, topic_name, *, preferred_count_per_topic, connectivity_percentile_thr):
@@ -147,7 +165,6 @@ def prompt_assign_title_to_summary(topic_summary_data):
         print(f"❌ Error: {response.status_code}")
 
     return ""
-
 
 
 def convert_to_html(text):

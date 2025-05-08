@@ -1,12 +1,9 @@
-import json
 from urllib.parse import quote
 
-import numpy as np
 import requests
 
-from pubtrends.data import AnalysisData
 from config import *
-from pubtrends.topics import get_topics_description
+from pubtrends.data import AnalysisData
 from sum_categories import summarize_categories
 from sum_topics import summarize_topics
 
@@ -32,25 +29,21 @@ def start_summarize_async_step(search_queries, job_id):
     search_queries[job_id]['progress'][SUMMARIZE_STEP] = STEP_ERROR
 
 
-
-
 def make_summarize_model_sync_call(
         search_queries, job_id,
         summarized_data
 ):
     ex = AnalysisData.from_json(summarized_data)
+    summaries_storage = {}
     try:
-        summarized_categories = summarize_categories(ex)
-        topics_summary = summarize_topics(data=ex)
+        summarize_categories(ex, summaries_storage)
+        summarize_topics(ex, summaries_storage)
     except Exception as e:
         print(e)
         search_queries[job_id]['progress'][SUMMARIZE_STEP] = STEP_ERROR
         return
-    search_queries[job_id][SUMMARIZE_STEP + "_RESULT"] = summarized_categories
-    search_queries[job_id][SUMMARIZE_STEP + "_RESULT2"] = topics_summary
+    search_queries[job_id][SUMMARIZE_STEP + "_RESULT"] = summaries_storage
     search_queries[job_id]['progress'][SUMMARIZE_STEP] = STEP_COMPLETE
-
-
 
 
 def start_semantic_search_async_step(search_queries, job_id):
@@ -77,5 +70,3 @@ def make_semantic_search_sync_call(query, search_queries, job_id):
     except Exception as e:
         print(e)
     search_queries[job_id]['progress'][SEMANTIC_SEARCH_STEP] = STEP_ERROR
-
-

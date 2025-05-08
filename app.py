@@ -152,44 +152,25 @@ def results(job_id):
         query = search_queries[job_id]['search_query']
         pubtrends_url = f"{PUBTRENDS_API}/result?query={quote(query)}" \
               f"&source=Pubmed&limit=1000&sort=most_cited&noreviews=on&min_year=&max_year=&jobid={job_id}"
-        summarized_categories = search_queries[job_id][SUMMARIZE_STEP + "_RESULT"]
-        genes_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_GENES])
-        substances_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_SUBSTANCES])
-        conditions_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_CONDITIONS])
-        proteins_summaries = prepare_entities_summary(summarized_categories[GOOGLE_SUMMARIZE_CATEGORY_PROTEINS])
-        topics_summaries = search_queries[job_id][SUMMARIZE_STEP + "_RESULT2"]
-        # TODO fix me
+        summaries_storage = search_queries[job_id][SUMMARIZE_STEP + "_RESULT"]
+        summaries = {}
+        for key, render_key in [
+            (GOOGLE_SUMMARIZE_CATEGORY_GENES, "genes_summaries"),
+            (GOOGLE_SUMMARIZE_CATEGORY_SUBSTANCES, "substances_summaries"),
+            (GOOGLE_SUMMARIZE_CATEGORY_CONDITIONS, "conditions_summaries"),
+            (GOOGLE_SUMMARIZE_CATEGORY_PROTEINS, "proteins_summaries"),
+            (SUMMARY_TOPICS, "topics_summaries")]:
+            if key in summaries_storage:
+                summaries[render_key] = summaries_storage[key]
         return render_template(
             "results.html",
             search_query=query,
             pubtrends_result=pubtrends_url,
-            genes_summaries=genes_summaries,
-            substances_summaries=substances_summaries,
-            conditions_summaries=conditions_summaries,
-            proteins_summaries=proteins_summaries,
-            topics_summaries=topics_summaries)
+            **summaries
+        )
     except Exception as e:
         print(e)
         return render_template('error.html', message="Exception occurred")
-
-
-def prepare_entities_summary(entities):
-    entities_summary = []
-    for idx, entity in enumerate(sorted(entities, key=lambda g: g['total_connections'], reverse=True), start=1):
-        collapse_id = f"collapse-{idx}"
-        paper_links = "<br>".join(
-            f'<a href="/paper/{pid}" target="_blank">{pid}</a>' for pid in entity["cited_in"]
-        )
-        # idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id
-        entities_summary.append((
-            idx,
-            entity['name'],
-            entity['context'],
-            entity['total_connections'],
-            paper_links,
-            len(entity['cited_in']),
-            collapse_id))
-    return entities_summary
 
 
 @app.route('/error')
