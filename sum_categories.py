@@ -92,7 +92,7 @@ def prepare_entities_summary(entities):
     for idx, entity in enumerate(sorted(entities, key=lambda g: g['total_connections'], reverse=True), start=1):
         collapse_id = f"collapse-{idx}"
         paper_links = "<br>".join(
-            f'<a href="/paper/{pid}" target="_blank">{pid}</a>' for pid in entity["cited_in"]
+            f'<a href="https://pubmed.ncbi.nlm.nih.gov/{pid}" target="_blank">PMID: {pid}</a>' for pid in entity["cited_in"]
         )
         # idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id
         entities_summary.append((
