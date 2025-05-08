@@ -40,7 +40,7 @@ STEP_ERROR = 'error'
 
 START_STEP = 'Starting analysis'
 PUBTRENDS_STEP = 'Waiting for the PubTrends analysis results'
-SUMMARIZE_STEP = 'Building summaries for categories'
+SUMMARIZE_STEP = 'Building summaries'
 
 SEMANTIC_SEARCH_STEP = 'Semantic search'
 STEP_SEMANTIC_SEARCH_PASSED_FURTHER = 'semantic_search_ids_passed_further'
