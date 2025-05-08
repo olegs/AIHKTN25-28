@@ -37,32 +37,8 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar py-3 shadow-sm" style="min-height: 100vh;">
-            <div class="position-sticky">
-                <h3 class="pb-2 border-bottom">Categories</h3>
-                <ul class="nav flex-column mt-3">
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#topics">Topics</a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#genes">Genes</a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#substances">Substances</a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#conditions">Conditions</a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#proteins">Proteins</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
         <!-- Main content -->
-        <div class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-4">
+        <div class="col-md-12 col-lg-12 px-md-4 py-4">
             <h1 class="mb-4">Results</h1>
 
             <div class="alert border-start border-4">
@@ -72,141 +48,159 @@
             </div>
 
             <h2 class="mt-5 pb-2 border-bottom">Summaries</h2>
-            <div id="topics" class="mt-4 pt-2">
-                <h3>Topics</h3>
-                {% for topics_name, title, summary in topics_summaries %}
-                <p>
-                    <h4>Topic {{topics_name}}</h4>
-                    <strong>{{title}}</strong>
+
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs mt-4" id="summaryTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="topics-tab" data-bs-toggle="tab" data-bs-target="#topics" type="button" role="tab" aria-controls="topics" aria-selected="true">Topics</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="genes-tab" data-bs-toggle="tab" data-bs-target="#genes" type="button" role="tab" aria-controls="genes" aria-selected="false">Genes</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="substances-tab" data-bs-toggle="tab" data-bs-target="#substances" type="button" role="tab" aria-controls="substances" aria-selected="false">Substances</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="conditions-tab" data-bs-toggle="tab" data-bs-target="#conditions" type="button" role="tab" aria-controls="conditions" aria-selected="false">Conditions</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="proteins-tab" data-bs-toggle="tab" data-bs-target="#proteins" type="button" role="tab" aria-controls="proteins" aria-selected="false">Proteins</button>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content mt-3">
+                <div class="tab-pane fade show active" id="topics" role="tabpanel" aria-labelledby="topics-tab">
+                    {% for topics_name, title, summary in topics_summaries %}
+                    <div class="topic-item">
+                        <h4>Topic {{topics_name}}</h4>
+                        <strong>{{title}}</strong>
+                        <hr style='border: none; border-top: 1px dashed #ccc;'/>
+                        <div>{{summary | safe}}</div>
+                    </div>
                     <hr style='border: none; border-top: 1px dashed #ccc;'/>
-                    {{summary | safe}}
-                </p>
-                <hr style='border: none; border-top: 1px dashed #ccc;'/>
-                {% endfor %}
-            </div>
-
-            <div id="genes" class="mt-4 pt-2">
-                <h3>Genes</h3>
-                <table id="genes_summaries" class="table table-sm table-bordered table-striped">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Context</th>
-                        <th>Importance</th>
-                        <th>Papers</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in genes_summaries %}
-                    <tr>
-                        <td>{{idx}}</td>
-                        <td>{{entity_name}}</td>
-                        <td>{{entity_context}}</td>
-                        <td>{{entity_total_connections}}</td>
-                        <td>
-                        <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
-                            Show Papers ({{entities_len}})
-                        </span>
-                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
-                        </td>
-                    </tr>
                     {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                </div>
 
-            <div id="substances" class="mt-4 pt-2">
-                <h3>Substances</h3>
-                <table id="substances_summaries" class="table table-sm table-bordered table-striped">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Context</th>
-                        <th>Importance</th>
-                        <th>Papers</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in substances_summaries %}
-                    <tr>
-                        <td>{{idx}}</td>
-                        <td>{{entity_name}}</td>
-                        <td>{{entity_context}}</td>
-                        <td>{{entity_total_connections}}</td>
-                        <td>
-                        <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
-                            Show Papers ({{entities_len}})
-                        </span>
-                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                <div class="tab-pane fade" id="genes" role="tabpanel" aria-labelledby="genes-tab">
+                    <table id="genes_summaries" class="table table-sm table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Context</th>
+                            <th>Importance</th>
+                            <th>Papers</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in genes_summaries %}
+                        <tr>
+                            <td>{{idx}}</td>
+                            <td>{{entity_name}}</td>
+                            <td>{{entity_context}}</td>
+                            <td>{{entity_total_connections}}</td>
+                            <td>
+                            <span class="toggle-button" onclick="toggleCollapse('genes-{{ collapse_id }}')">
+                                Show Papers ({{entities_len}})
+                            </span>
+                                <div id="genes-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
-            <div id="conditions" class="mt-4 pt-2">
-                <h3>Conditions</h3>
-                <table id="conditions_summaries" class="table table-sm table-bordered table-striped">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Context</th>
-                        <th>Importance</th>
-                        <th>Papers</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in conditions_summaries %}
-                    <tr>
-                        <td>{{idx}}</td>
-                        <td>{{entity_name}}</td>
-                        <td>{{entity_context}}</td>
-                        <td>{{entity_total_connections}}</td>
-                        <td>
-                        <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
-                            Show Papers ({{entities_len}})
-                        </span>
-                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                <div class="tab-pane fade" id="substances" role="tabpanel" aria-labelledby="substances-tab">
+                    <table id="substances_summaries" class="table table-sm table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Context</th>
+                            <th>Importance</th>
+                            <th>Papers</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in substances_summaries %}
+                        <tr>
+                            <td>{{idx}}</td>
+                            <td>{{entity_name}}</td>
+                            <td>{{entity_context}}</td>
+                            <td>{{entity_total_connections}}</td>
+                            <td>
+                            <span class="toggle-button" onclick="toggleCollapse('substances-{{ collapse_id }}')">
+                                Show Papers ({{entities_len}})
+                            </span>
+                                <div id="substances-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
-            <div id="proteins" class="mt-4 pt-2">
-                <h3>Proteins</h3>
-                <table id="proteins_summaries" class="table table-sm table-bordered table-striped">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Context</th>
-                        <th>Importance</th>
-                        <th>Papers</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in proteins_summaries %}
-                    <tr>
-                        <td>{{idx}}</td>
-                        <td>{{entity_name}}</td>
-                        <td>{{entity_context}}</td>
-                        <td>{{entity_total_connections}}</td>
-                        <td>
-                        <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
-                            Show Papers ({{entities_len}})
-                        </span>
-                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="tab-pane fade" id="conditions" role="tabpanel" aria-labelledby="conditions-tab">
+                    <table id="conditions_summaries" class="table table-sm table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Context</th>
+                            <th>Importance</th>
+                            <th>Papers</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in conditions_summaries %}
+                        <tr>
+                            <td>{{idx}}</td>
+                            <td>{{entity_name}}</td>
+                            <td>{{entity_context}}</td>
+                            <td>{{entity_total_connections}}</td>
+                            <td>
+                            <span class="toggle-button" onclick="toggleCollapse('conditions-{{ collapse_id }}')">
+                                Show Papers ({{entities_len}})
+                            </span>
+                                <div id="conditions-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade" id="proteins" role="tabpanel" aria-labelledby="proteins-tab">
+                    <table id="proteins_summaries" class="table table-sm table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Context</th>
+                            <th>Importance</th>
+                            <th>Papers</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in proteins_summaries %}
+                        <tr>
+                            <td>{{idx}}</td>
+                            <td>{{entity_name}}</td>
+                            <td>{{entity_context}}</td>
+                            <td>{{entity_total_connections}}</td>
+                            <td>
+                            <span class="toggle-button" onclick="toggleCollapse('proteins-{{ collapse_id }}')">
+                                Show Papers ({{entities_len}})
+                            </span>
+                                <div id="proteins-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
                 <div class="col text-center">
                     <a class="btn btn-success" href="/">Back Home</a>
