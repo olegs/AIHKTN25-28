@@ -37,7 +37,8 @@
         .dataTables_wrapper .dataTables_paginate .paginate_button {
             padding: 0.25em 0.5em;
         }
-        .dataTables_wrapper .dataTables_length, 
+
+        .dataTables_wrapper .dataTables_length,
         .dataTables_wrapper .dataTables_filter {
             margin-bottom: 1em;
         }
@@ -61,7 +62,7 @@
             }
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Initialize DataTables for each table with pagination
             const genesTable = $('#genes_summaries').DataTable({});
             const substancesTable = $('#substances_summaries').DataTable({});
@@ -96,30 +97,38 @@
         <div class="col-md-12 col-lg-12 px-md-4 py-4">
             <h1 class="mb-4">AI-powered PubTrends Results</h1>
 
-            <div class="alert border-start border-4">
-                <p class="mb-1">Query: <strong>{{ search_query }}</strong></p>
-                <p class="mb-0">See the PubTrends base results <a href="{{ pubtrends_result }}"
-                                                                  class="fw-bold">here.</a></p>
-            </div>
+            <h3>Query: <strong>{{ search_query }}</strong></h3>
+            <p class="mb-0">See the PubTrends base results <a href="{{ pubtrends_result }}"
+                                                              class="fw-bold">here.</a></p>
 
             <h2 class="mt-5 pb-2 border-bottom">Summaries</h2>
 
             <!-- Nav tabs -->
             <ul class="nav nav-tabs mt-4" id="summaryTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="topics-tab" data-bs-toggle="tab" data-bs-target="#topics" type="button" role="tab" aria-controls="topics" aria-selected="true">Topics</button>
+                    <button class="nav-link active" id="topics-tab" data-bs-toggle="tab" data-bs-target="#topics"
+                            type="button" role="tab" aria-controls="topics" aria-selected="true">Topics
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="genes-tab" data-bs-toggle="tab" data-bs-target="#genes" type="button" role="tab" aria-controls="genes" aria-selected="false">Genes</button>
+                    <button class="nav-link" id="genes-tab" data-bs-toggle="tab" data-bs-target="#genes" type="button"
+                            role="tab" aria-controls="genes" aria-selected="false">Genes
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="substances-tab" data-bs-toggle="tab" data-bs-target="#substances" type="button" role="tab" aria-controls="substances" aria-selected="false">Substances</button>
+                    <button class="nav-link" id="substances-tab" data-bs-toggle="tab" data-bs-target="#substances"
+                            type="button" role="tab" aria-controls="substances" aria-selected="false">Substances
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="conditions-tab" data-bs-toggle="tab" data-bs-target="#conditions" type="button" role="tab" aria-controls="conditions" aria-selected="false">Conditions</button>
+                    <button class="nav-link" id="conditions-tab" data-bs-toggle="tab" data-bs-target="#conditions"
+                            type="button" role="tab" aria-controls="conditions" aria-selected="false">Conditions
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="proteins-tab" data-bs-toggle="tab" data-bs-target="#proteins" type="button" role="tab" aria-controls="proteins" aria-selected="false">Proteins</button>
+                    <button class="nav-link" id="proteins-tab" data-bs-toggle="tab" data-bs-target="#proteins"
+                            type="button" role="tab" aria-controls="proteins" aria-selected="false">Proteins
+                    </button>
                 </li>
             </ul>
 
@@ -130,7 +139,8 @@
                     <div class="topics-navigation mb-4">
                         <div class="d-flex flex-wrap gap-2">
                             {% for topics_name, title, summary in topics_summaries %}
-                            <a href="#topic-{{topics_name}}" class="btn btn-sm btn-outline-dark">Topic {{topics_name}}: {{title}}</a>
+                            <a href="#topic-{{topics_name}}" class="btn btn-sm btn-outline-dark">Topic {{topics_name}}:
+                                {{title}}</a>
                             {% endfor %}
                         </div>
                     </div>
@@ -159,7 +169,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in genes_summaries %}
+                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len,
+                        collapse_id in genes_summaries %}
                         <tr>
                             <td>{{idx}}</td>
                             <td>{{entity_name}}</td>
@@ -189,7 +200,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in substances_summaries %}
+                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len,
+                        collapse_id in substances_summaries %}
                         <tr>
                             <td>{{idx}}</td>
                             <td>{{entity_name}}</td>
@@ -199,7 +211,8 @@
                             <span class="toggle-button" onclick="toggleCollapse('substances-{{ collapse_id }}')">
                                 Show Papers ({{entities_len}})
                             </span>
-                                <div id="substances-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
+                                <div id="substances-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -219,7 +232,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in conditions_summaries %}
+                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len,
+                        collapse_id in conditions_summaries %}
                         <tr>
                             <td>{{idx}}</td>
                             <td>{{entity_name}}</td>
@@ -229,7 +243,8 @@
                             <span class="toggle-button" onclick="toggleCollapse('conditions-{{ collapse_id }}')">
                                 Show Papers ({{entities_len}})
                             </span>
-                                <div id="conditions-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
+                                <div id="conditions-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -249,7 +264,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len, collapse_id in proteins_summaries %}
+                        {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len,
+                        collapse_id in proteins_summaries %}
                         <tr>
                             <td>{{idx}}</td>
                             <td>{{entity_name}}</td>
@@ -267,9 +283,9 @@
                     </table>
                 </div>
             </div>
-                <div class="col text-center">
-                    <a class="btn btn-success" href="/">Back Home</a>
-                </div>
+            <div class="col text-center">
+                <a class="btn btn-success" href="/">Back Home</a>
+            </div>
         </div>
     </div>
 </div>
