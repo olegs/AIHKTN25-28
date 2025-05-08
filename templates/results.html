@@ -79,7 +79,7 @@
                     <h4>Topic {{topics_name}}</h4>
                     <strong>{{title}}</strong>
                     <hr style='border: none; border-top: 1px dashed #ccc;'/>
-                    {{summary}}
+                    {{summary | safe}}
                 </p>
                 <hr style='border: none; border-top: 1px dashed #ccc;'/>
                 {% endfor %}
@@ -108,7 +108,7 @@
                         <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
                             Show Papers ({{entities_len}})
                         </span>
-                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links}}</div>
+                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -139,7 +139,7 @@
                         <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
                             Show Papers ({{entities_len}})
                         </span>
-                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links}}</div>
+                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -170,7 +170,7 @@
                         <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
                             Show Papers ({{entities_len}})
                         </span>
-                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links}}</div>
+                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -201,7 +201,7 @@
                         <span class="toggle-button" onclick="toggleCollapse('{{ collapse_id }}')">
                             Show Papers ({{entities_len}})
                         </span>
-                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links}}</div>
+                            <div id="{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
                         </td>
                     </tr>
                     {% endfor %}
