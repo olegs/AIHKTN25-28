@@ -40,6 +40,18 @@ In contrast, on the other side of the image, show a clear and concise representa
 
 * I don't trust machine only review and I need control over the sources and story telling to get scientific trustably result, I want PubTrends review buddy to show me all the available options.
 
+Code samples
+---------------
+All code for the Google Cloud Functions endpoints is located in the cloud-scripts directory.
+This directory includes:
+* A function for semantic search integrated with BigQuery
+* A function for categorical summarization based on predefined categories
+* Two functions for summarization: one for short summaries using titles, and another for extended summaries based on abstracts
+
+The notebooks directory contains example Jupyter notebooks (.ipynb) that demonstrate how to interact with the deployed Run Functions. These examples illustrate typical use cases, including input formatting and API invocation, to help you quickly test and integrate the functions into your workflow.
+
+Prompts
+---------------
 Prompt to generate image:
 ```
 Create an image with the following characteristics:
@@ -53,8 +65,8 @@ Additional Details: Ensure the image captures the essence of a scientific enviro
 
 Jumbotron prompt
 ```
-This should be a jumbotron image. 
-Style: The image should be in the style of the "Dexter's Laboratory" cartoon. 
+This should be a jumbotron image.
+Style: The image should be in the style of the "Dexter's Laboratory" cartoon.
 Additional: It should use pale colors. There should be only one human on the image.
 Main Ideas: "1. Fast concise representation of the scientific area. 2.  Control over the sources and facts."
 It should show the complex pipeline of API calls to Google cloud.
@@ -63,8 +75,8 @@ It should show the complex pipeline of API calls to Google cloud.
 
 Error prompt
 ```
-Generate an image with huge text "ERROR". 
-Style: The image should be in the style of the "Dexter's Laboratory" cartoon. 
+Generate an image with huge text "ERROR".
+Style: The image should be in the style of the "Dexter's Laboratory" cartoon.
 Additional: It should use pale colors. There should be only one human on the image.
 Main Ideas: "Something went badly wrong in experiment."
 ```
@@ -72,20 +84,19 @@ Main Ideas: "Something went badly wrong in experiment."
 Computing
 ```
 Generate an image with a huge text "Computing" and "Google API" on it.
-Style: Pale colors. The image should be in the style of the "Dexter's Laboratory" cartoon. 
+Style: Pale colors. The image should be in the style of the "Dexter's Laboratory" cartoon.
 Additional: There should be a pipeline with calls to Google API on it.
 ```
 
 Persona Girl
 ```
 A black colored girl who works as a Doctor professor in univerity Use the Dexter lab cartoon like style for the image. No background and no other subjects on the foreground.
-Make it ultimately funny. 
+Make it ultimately funny.
 ```
 
 Persona Boy
 ```
-A chinese boy who works as a Doctor professor in univerity Use the Dexter lab cartoon like style for the image. 
+A chinese boy who works as a Doctor professor in univerity Use the Dexter lab cartoon like style for the image.
 No background and no other subjects on the foreground.
-Make it ultimately funny. 
+Make it ultimately funny.
 ```
-
