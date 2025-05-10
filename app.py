@@ -1,5 +1,8 @@
 import uuid
 import time
+import json
+import hashlib
+import os
 
 from bokeh.embed import components
 from flask import Flask, render_template, request, redirect, url_for, jsonify
@@ -15,6 +18,38 @@ app = Flask(__name__)
 # In-memory storage for job status and results
 # In a production environment, this should be replaced with a proper database
 search_queries = {}
+
+# Cache functions
+def generate_cache_key(search_query, search_type):
+    """Generate a unique cache key based on search query and type"""
+    key_string = f"{search_query}_{search_type}"
+    return hashlib.md5(key_string.encode()).hexdigest()
+
+def get_cache_path(cache_key):
+    """Get the full path to the cache file"""
+    return os.path.join(CACHE_DIR, f"{cache_key}.json")
+
+def save_to_cache(cache_key, data):
+    """Save search results to cache"""
+    try:
+        cache_path = get_cache_path(cache_key)
+        with open(cache_path, 'w') as f:
+            json.dump(data, f)
+        return True
+    except Exception as e:
+        print(f"Error saving to cache: {e}")
+        return False
+
+def load_from_cache(cache_key):
+    """Load search results from cache if available"""
+    cache_path = get_cache_path(cache_key)
+    if os.path.exists(cache_path):
+        try:
+            with open(cache_path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error loading from cache: {e}")
+    return None
 
 @app.route('/', methods=['GET'])
 def index():
@@ -32,13 +67,31 @@ def search():
                               search_results=[],
                               search_type=search_type)
 
+    # Generate cache key for this search
+    cache_key = generate_cache_key(search_query, search_type)
+
+    # Check if we have cached results
+    cached_data = load_from_cache(cache_key)
+    if cached_data:
+        print(f"Using cached results for query: {search_query}")
+        # Restore the job from cache
+        job_id = cached_data.get('job_id')
+        if job_id:
+            search_queries[job_id] = cached_data
+            # If the job is complete, go directly to results
+            if all(step == STEP_COMPLETE for step in cached_data.get('progress', {}).values()):
+                return redirect(url_for('results', job_id=job_id))
+            # Otherwise, show progress
+            return redirect(url_for('progress', job_id=job_id))
+
     if search_type == 'text':
         job_id = make_pubtrends_search_api_call(search_query)
         if job_id:
             search_queries[job_id] = dict(search_query=search_query,
                                           job_id=job_id,
                                           progress=create_text_steps(),
-                                          timestamp=time.time())
+                                          timestamp=time.time(),
+                                          cache_key=cache_key)  # Store cache key for later use
             return redirect(url_for('progress', job_id=job_id))
         else:
             return render_template('error.html',
@@ -49,7 +102,8 @@ def search():
         search_queries[job_id] = dict(search_query=search_query,
                                       job_id=job_id,
                                       progress=create_semantic_steps(),
-                                      timestamp=time.time())
+                                      timestamp=time.time(),
+                                      cache_key=cache_key)  # Store cache key for later use
         return redirect(url_for('progress', job_id=job_id))
 
 
@@ -178,6 +232,16 @@ def results(job_id):
         if SUMMARY_TOPICS in summaries_storage:
             # SUMMARY_TOPICS is already a list of tuples, no need to unpack
             summaries["topics_summaries"] = summaries_storage[SUMMARY_TOPICS]
+
+        # Mark all steps as complete in the progress
+        for step in search_queries[job_id]['progress']:
+            search_queries[job_id]['progress'][step] = STEP_COMPLETE
+
+        # Save results to cache if we have a cache key
+        if 'cache_key' in search_queries[job_id]:
+            cache_key = search_queries[job_id]['cache_key']
+            save_to_cache(cache_key, search_queries[job_id])
+            print(f"Saved results to cache for query: {query}")
 
         return render_template(
             "results.html",

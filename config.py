@@ -1,5 +1,9 @@
 import os
 
+# Cache directory for storing search results
+CACHE_DIR = os.path.expanduser("~/aipubtrends")
+os.makedirs(CACHE_DIR, exist_ok=True)
+
 # TODO fix me!!!!
 PUBTRENDS_API = os.getenv(
     "PUBTRENDS_API",
@@ -59,4 +63,3 @@ def create_semantic_steps():
         PUBTRENDS_STEP: STEP_NOT_STARTED,
         SUMMARIZE_STEP: STEP_NOT_STARTED
     }
-
