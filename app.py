@@ -1,11 +1,14 @@
 import uuid
 import time
 
+from bokeh.embed import components
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import requests
 from urllib.parse import quote
 from async_tasks import start_summarize_async_step, start_semantic_search_async_step
 from config import *
+from graph import plot_entities_graph, build_entities_graph
+from sum_categories import prepare_entities_summary
 
 app = Flask(__name__)
 
@@ -154,14 +157,28 @@ def results(job_id):
               f"&source=Pubmed&limit=1000&sort=most_cited&noreviews=on&min_year=&max_year=&jobid={job_id}"
         summaries_storage = search_queries[job_id][SUMMARIZE_STEP + "_RESULT"]
         summaries = {}
+
         for key, render_key in [
             (GOOGLE_SUMMARIZE_CATEGORY_GENES, "genes_summaries"),
             (GOOGLE_SUMMARIZE_CATEGORY_SUBSTANCES, "substances_summaries"),
             (GOOGLE_SUMMARIZE_CATEGORY_CONDITIONS, "conditions_summaries"),
             (GOOGLE_SUMMARIZE_CATEGORY_PROTEINS, "proteins_summaries"),
-            (SUMMARY_TOPICS, "topics_summaries")]:
+        ]:
             if key in summaries_storage:
-                summaries[render_key] = summaries_storage[key]
+                connections_by_pid, summarized_data = summaries_storage[key]
+                for entity in summarized_data:
+                    entity["total_connections"] = sum(
+                        connections_by_pid.get(pid, 0) for pid in entity.get("cited_in", [])
+                    )
+                summaries[render_key] = prepare_entities_summary(summarized_data)
+
+                g = build_entities_graph(connections_by_pid, summarized_data)
+                summaries[f"{render_key}_graph"] = components(plot_entities_graph(g))
+
+        if SUMMARY_TOPICS in summaries_storage:
+            # SUMMARY_TOPICS is already a list of tuples, no need to unpack
+            summaries["topics_summaries"] = summaries_storage[SUMMARY_TOPICS]
+
         return render_template(
             "results.html",
             search_query=query,
@@ -186,7 +203,6 @@ def cleanup_old_jobs():
         if current_time - search_queries[job_id]['timestamp'] > 24 * 3600:
             if job_id in search_queries:
                 del search_queries[job_id]
-            del search_queries[job_id]
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, extra_files=['templates/'], port=5003)

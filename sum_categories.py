@@ -19,7 +19,7 @@ def summarize_categories(ex, summaries_storage):
                             GOOGLE_SUMMARIZE_CATEGORY_PROTEINS]:
                 # Submit all batches to the executor
                 futures.append(executor.submit(
-                    summarize_categorie_and_save,
+                    summarize_category_and_save,
                     abstracts_json, highly_connected_df, si_mode, summaries_storage
                 ))
     # Process results as they complete
@@ -28,8 +28,10 @@ def summarize_categories(ex, summaries_storage):
 
 
 
-def summarize_categorie_and_save(abstracts_json, highly_connected_df, si_mode, summaries_storage):
-    summaries_storage[si_mode] = prepare_entities_summary(summarize_entities(si_mode, abstracts_json, highly_connected_df))
+def summarize_category_and_save(abstracts_json, highly_connected_df, si_mode, summaries_storage):
+    summarized_data = summarize_entities(si_mode, abstracts_json, highly_connected_df)
+    connections_by_pid = dict(zip(highly_connected_df['id'], highly_connected_df['connections']))
+    summaries_storage[si_mode] = (connections_by_pid, summarized_data)
 
 
 def preprocess_summarize_categories(ex):
@@ -56,11 +58,6 @@ def summarize_entities(si_mode, abstracts_json, highly_connected_df):
     # Handle response
     if response.status_code == 200:
         summarized_data = response.json()
-        connections_by_pid = dict(zip(highly_connected_df['id'], highly_connected_df['connections']))
-        for entity in summarized_data:
-            entity["total_connections"] = sum(
-                connections_by_pid.get(pid, 0) for pid in entity.get("cited_in", [])
-            )
         print(f"✅{si_mode} Entities Extracted")
         return summarized_data
     return None

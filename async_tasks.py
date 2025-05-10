@@ -1,6 +1,7 @@
 from urllib.parse import quote
 
 import requests
+import threading
 
 from config import *
 from pubtrends.data import AnalysisData
@@ -17,7 +18,6 @@ def start_summarize_async_step(search_queries, job_id):
         if response.status_code == 200:
             data = response.json()
             # Make API call in a separate thread
-            import threading
             thread = threading.Thread(target=make_summarize_model_sync_call,
                                       args=(search_queries, job_id, data))
             thread.daemon = True
@@ -50,7 +50,6 @@ def start_semantic_search_async_step(search_queries, job_id):
     print("Starting semantic search step")
     query = search_queries[job_id]['search_query']
     # Make API call in a separate thread
-    import threading
     thread = threading.Thread(target=make_semantic_search_sync_call,
                               args=(query, search_queries, job_id))
     thread.daemon = True
