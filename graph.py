@@ -70,9 +70,7 @@ def plot_entities_graph(g):
         index=ids,
     )
     # Set node glyph
-    graph.node_renderer.glyph = Circle(radius=15, fill_color="skyblue")
-    graph.node_renderer.hover_glyph = Circle(radius=20, fill_color="orange")
-    graph.node_renderer.selection_glyph = Circle(radius=20, fill_color="red")
+    graph.node_renderer.glyph = Circle(radius=1, fill_color="skyblue")
 
     graph.edge_renderer.data_source.data = dict(
         start=[nodes_to_idx[u] for u, v in edges],
@@ -81,8 +79,6 @@ def plot_entities_graph(g):
     )
     # Set edge glyph
     graph.edge_renderer.glyph = MultiLine(line_color="gray", line_alpha=0.8, line_width="line_widths")
-    graph.edge_renderer.selection_glyph = MultiLine(line_color="navy", line_width=3)
-    graph.edge_renderer.hover_glyph = MultiLine(line_color="navy", line_width=3)
 
     # Set selection policy
     graph.selection_policy = NodesAndLinkedEdges()
@@ -93,7 +89,7 @@ def plot_entities_graph(g):
     xs = [pos[v][0] for v in nodes]
     ys = [pos[v][1] for v in nodes]
     xs, ys = minmax_scale(xs) * 100, minmax_scale(ys) * 100
-    graph_layout = dict(zip(nodes, zip(xs, ys)))
+    graph_layout = dict(zip(ids, zip(xs, ys)))
     graph.layout_provider = StaticLayoutProvider(graph_layout=graph_layout)
 
     # Add Node labels

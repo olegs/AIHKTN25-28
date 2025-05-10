@@ -160,6 +160,7 @@ def progress(job_id):
 @app.route('/check_status/<job_id>')
 def check_status(job_id):
     # TODO: add better error processing
+
     if job_id not in search_queries:
         return {'status': 'not_found'}
     progress = search_queries[job_id]['progress']
