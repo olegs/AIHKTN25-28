@@ -220,7 +220,10 @@ def results(job_id):
             (GOOGLE_SUMMARIZE_CATEGORY_PROTEINS, "proteins_summaries"),
         ]:
             if key in summaries_storage:
-                connections_by_pid, summarized_data = summaries_storage[key]
+                summary = summaries_storage[key]
+                if summary is None:
+                    continue
+                connections_by_pid, summarized_data = summary
                 for entity in summarized_data:
                     entity["total_connections"] = sum(
                         connections_by_pid.get(pid, 0) for pid in entity.get("cited_in", [])
@@ -232,7 +235,9 @@ def results(job_id):
 
         if SUMMARY_TOPICS in summaries_storage:
             # SUMMARY_TOPICS is already a list of tuples, no need to unpack
-            summaries["topics_summaries"] = summaries_storage[SUMMARY_TOPICS]
+            summary = summaries_storage[SUMMARY_TOPICS]
+            if summary is not None:
+                summaries["topics_summaries"] = summary
 
         # Mark all steps as complete in the progress
         for step in search_queries[job_id]['progress']:
