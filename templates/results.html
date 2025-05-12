@@ -108,8 +108,8 @@
         <div class="col-md-12 col-lg-12 px-md-4 py-4">
             <h1 class="mb-4">AI-powered PubTrends Results</h1>
 
-            <h3>Query: <strong>{{ search_query }}</strong></h3>
-            <p class="mb-0">See the PubTrends base results <a href="{{ pubtrends_result }}"
+            <h3>Query: <strong>{{ search_query | default('') }}</strong></h3>
+            <p class="mb-0">See the PubTrends base results <a href="{{ pubtrends_result | default('#') }}"
                                                               class="fw-bold">here.</a></p>
 
             <h2 class="mt-5 pb-2 border-bottom">Summaries</h2>
@@ -149,23 +149,27 @@
                     <!-- Topics Navigation -->
                     <div class="topics-navigation mb-4">
                         <div class="d-flex flex-wrap gap-2">
+                            {% if topics_summaries is defined and topics_summaries %}
                             {% for topics_name, title, summary in topics_summaries %}
-                            <a href="#topic-{{topics_name}}" class="btn btn-sm btn-outline-dark">Topic {{topics_name}}:
-                                {{title}}</a>
+                            <a href="#topic-{{topics_name | default('')}}" class="btn btn-sm btn-outline-dark">Topic {{topics_name | default('')}}:
+                                {{title | default('')}}</a>
                             {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                     <hr/>
 
+                    {% if topics_summaries is defined and topics_summaries %}
                     {% for topics_name, title, summary in topics_summaries %}
-                    <div class="topic-item" id="topic-{{topics_name}}">
-                        <h4>Topic {{topics_name}}</h4>
-                        <strong>{{title}}</strong>
+                    <div class="topic-item" id="topic-{{topics_name | default('')}}">
+                        <h4>Topic {{topics_name | default('')}}</h4>
+                        <strong>{{title | default('')}}</strong>
                         <hr style='border: none; border-top: 1px dashed #ccc;'/>
-                        <div>{{summary | safe}}</div>
+                        <div>{{summary | default('') | safe}}</div>
                     </div>
                     <hr style='border: none; border-top: 1px dashed #ccc;'/>
                     {% endfor %}
+                    {% endif %}
                 </div>
 
                 <div class="tab-pane fade" id="genes" role="tabpanel" aria-labelledby="genes-tab">
@@ -180,29 +184,33 @@
                         </tr>
                         </thead>
                         <tbody>
+                        {% if genes_summaries is defined and genes_summaries %}
                         {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len,
                         collapse_id in genes_summaries %}
                         <tr>
-                            <td>{{idx}}</td>
-                            <td>{{entity_name}}</td>
-                            <td>{{entity_context}}</td>
-                            <td>{{entity_total_connections}}</td>
+                            <td>{{idx | default('')}}</td>
+                            <td>{{entity_name | default('')}}</td>
+                            <td>{{entity_context | default('')}}</td>
+                            <td>{{entity_total_connections | default('')}}</td>
                             <td>
                             <span class="toggle-button" onclick="toggleCollapse('genes-{{ collapse_id }}')">
-                                Show Papers ({{entities_len}})
+                                Show Papers ({{entities_len | default(0)}})
                             </span>
-                                <div id="genes-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
+                                <div id="genes-{{collapse_id}}" class="collapse-content">{{paper_links | default('') | safe}}</div>
                             </td>
                         </tr>
                         {% endfor %}
+                        {% endif %}
                         </tbody>
                     </table>
                     <strong>Connections graph</strong>
                     <p>
                         The graph below shows connections based papers similarity network.
                     </p>
-                    {{ genes_summaries_graph[0]|safe }}
-                    {{ genes_summaries_graph[1]|safe }}
+                    {% if genes_summaries_graph is defined and genes_summaries_graph %}
+                    {{ genes_summaries_graph[0]|default('')|safe }}
+                    {{ genes_summaries_graph[1]|default('')|safe }}
+                    {% endif %}
 
                 </div>
 
@@ -218,30 +226,34 @@
                         </tr>
                         </thead>
                         <tbody>
+                        {% if substances_summaries is defined and substances_summaries %}
                         {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len,
                         collapse_id in substances_summaries %}
                         <tr>
-                            <td>{{idx}}</td>
-                            <td>{{entity_name}}</td>
-                            <td>{{entity_context}}</td>
-                            <td>{{entity_total_connections}}</td>
+                            <td>{{idx | default('')}}</td>
+                            <td>{{entity_name | default('')}}</td>
+                            <td>{{entity_context | default('')}}</td>
+                            <td>{{entity_total_connections | default('')}}</td>
                             <td>
                             <span class="toggle-button" onclick="toggleCollapse('substances-{{ collapse_id }}')">
-                                Show Papers ({{entities_len}})
+                                Show Papers ({{entities_len | default(0)}})
                             </span>
-                                <div id="substances-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}
+                                <div id="substances-{{collapse_id}}" class="collapse-content">{{paper_links | default('') | safe}}
                                 </div>
                             </td>
                         </tr>
                         {% endfor %}
+                        {% endif %}
                         </tbody>
                     </table>
                     <strong>Connections graph</strong>
                     <p>
                         The graph below shows connections based papers similarity network.
                     </p>
-                    {{ substances_summaries_graph[0]|safe }}
-                    {{ substances_summaries_graph[1]|safe }}
+                    {% if substances_summaries_graph is defined and substances_summaries_graph %}
+                    {{ substances_summaries_graph[0]|default('')|safe }}
+                    {{ substances_summaries_graph[1]|default('')|safe }}
+                    {% endif %}
                 </div>
 
                 <div class="tab-pane fade" id="conditions" role="tabpanel" aria-labelledby="conditions-tab">
@@ -256,30 +268,34 @@
                         </tr>
                         </thead>
                         <tbody>
+                        {% if conditions_summaries is defined and conditions_summaries %}
                         {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len,
                         collapse_id in conditions_summaries %}
                         <tr>
-                            <td>{{idx}}</td>
-                            <td>{{entity_name}}</td>
-                            <td>{{entity_context}}</td>
-                            <td>{{entity_total_connections}}</td>
+                            <td>{{idx | default('')}}</td>
+                            <td>{{entity_name | default('')}}</td>
+                            <td>{{entity_context | default('')}}</td>
+                            <td>{{entity_total_connections | default('')}}</td>
                             <td>
                             <span class="toggle-button" onclick="toggleCollapse('conditions-{{ collapse_id }}')">
-                                Show Papers ({{entities_len}})
+                                Show Papers ({{entities_len | default(0)}})
                             </span>
-                                <div id="conditions-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}
+                                <div id="conditions-{{collapse_id}}" class="collapse-content">{{paper_links | default('') | safe}}
                                 </div>
                             </td>
                         </tr>
                         {% endfor %}
+                        {% endif %}
                         </tbody>
                     </table>
                     <strong>Connections graph</strong>
                     <p>
                         The graph below shows connections based papers similarity network.
                     </p>
-                    {{ conditions_summaries_graph[0]|safe }}
-                    {{ conditions_summaries_graph[1]|safe }}
+                    {% if conditions_summaries_graph is defined and conditions_summaries_graph %}
+                    {{ conditions_summaries_graph[0]|default('')|safe }}
+                    {{ conditions_summaries_graph[1]|default('')|safe }}
+                    {% endif %}
                 </div>
 
                 <div class="tab-pane fade" id="proteins" role="tabpanel" aria-labelledby="proteins-tab">
@@ -294,29 +310,33 @@
                         </tr>
                         </thead>
                         <tbody>
+                        {% if proteins_summaries is defined and proteins_summaries %}
                         {% for idx, entity_name, entity_context, entity_total_connections, paper_links, entities_len,
                         collapse_id in proteins_summaries %}
                         <tr>
-                            <td>{{idx}}</td>
-                            <td>{{entity_name}}</td>
-                            <td>{{entity_context}}</td>
-                            <td>{{entity_total_connections}}</td>
+                            <td>{{idx | default('')}}</td>
+                            <td>{{entity_name | default('')}}</td>
+                            <td>{{entity_context | default('')}}</td>
+                            <td>{{entity_total_connections | default('')}}</td>
                             <td>
                             <span class="toggle-button" onclick="toggleCollapse('proteins-{{ collapse_id }}')">
-                                Show Papers ({{entities_len}})
+                                Show Papers ({{entities_len | default(0)}})
                             </span>
-                                <div id="proteins-{{collapse_id}}" class="collapse-content">{{paper_links | safe}}</div>
+                                <div id="proteins-{{collapse_id}}" class="collapse-content">{{paper_links | default('') | safe}}</div>
                             </td>
                         </tr>
                         {% endfor %}
+                        {% endif %}
                         </tbody>
                     </table>
                     <strong>Connections graph</strong>
                     <p>
                         The graph below shows connections based papers similarity network.
                     </p>
-                    {{ proteins_summaries_graph[0]|safe }}
-                    {{ proteins_summaries_graph[1]|safe }}
+                    {% if proteins_summaries_graph is defined and proteins_summaries_graph %}
+                    {{ proteins_summaries_graph[0]|default('')|safe }}
+                    {{ proteins_summaries_graph[1]|default('')|safe }}
+                    {% endif %}
                 </div>
             </div>
             <div class="col text-center">
