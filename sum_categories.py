@@ -1,6 +1,7 @@
 import json
 
 import numpy as np
+import pandas as pd
 import requests
 from tornado import concurrent
 
@@ -29,25 +30,31 @@ def summarize_categories(ex, summaries_storage):
 
 
 def summarize_category_and_save(abstracts_json, highly_connected_df, si_mode, summaries_storage):
-    summarized_data = summarize_entities(si_mode, abstracts_json, highly_connected_df)
+    summarized_data = summarize_entities(si_mode, abstracts_json)
     connections_by_pid = dict(zip(highly_connected_df['id'], highly_connected_df['connections']))
     summaries_storage[si_mode] = (connections_by_pid, summarized_data)
 
 
 def preprocess_summarize_categories(ex):
-    highly_connected_df = filter_by_connectivity(
-        ex.df,
-        ex.papers_graph,
-        percentile=90,
-        max_count=50  # cap the result if it's too large
-    )
+    dfs = []
+    for c in sorted(ex.df.comp.unique()):
+        filtered_df = ex.df[ex.df.comp == c]
+        highly_connected_df = filter_by_connectivity(
+            filtered_df,
+            ex.papers_graph,
+            percentile=75,
+            max_count=20
+        )
+        dfs.append(highly_connected_df)
+    highly_connected_df = pd.concat(dfs).reset_index(drop=True)
+
     abstract_entries = highly_connected_df[['id', 'abstract']].to_dict(orient='records')
     # Convert to formatted string for LLM
     abstracts_json = json.dumps(abstract_entries, ensure_ascii=False, indent=2)
     return highly_connected_df, abstracts_json
 
 
-def summarize_entities(si_mode, abstracts_json, highly_connected_df):
+def summarize_entities(si_mode, abstracts_json):
     print(f"Summarizing category {si_mode}...")
     # Make the POST request with abstracts and si_mode
     response = requests.post(
