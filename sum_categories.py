@@ -42,8 +42,8 @@ def preprocess_summarize_categories(ex):
         highly_connected_df = filter_by_connectivity(
             filtered_df,
             ex.papers_graph,
-            percentile=75,
-            max_count=20
+            percentile=90,
+            max_count=10
         )
         dfs.append(highly_connected_df)
     highly_connected_df = pd.concat(dfs).reset_index(drop=True)
