@@ -31,6 +31,8 @@ def summarize_categories(ex, summaries_storage):
 
 def summarize_category_and_save(abstracts_json, highly_connected_df, si_mode, summaries_storage):
     summarized_data = summarize_entities(si_mode, abstracts_json)
+    if summarized_data is None:
+        return
     connections_by_pid = dict(zip(highly_connected_df['id'], highly_connected_df['connections']))
     summaries_storage[si_mode] = (connections_by_pid, summarized_data)
 
