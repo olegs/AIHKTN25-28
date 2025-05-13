@@ -209,7 +209,7 @@ def results(job_id):
     try:
         query = search_queries[job_id]['search_query']
         pubtrends_url = f"{PUBTRENDS_API}/result?query={quote(query)}" \
-              f"&source=Pubmed&limit=1000&sort=most_cited&noreviews=on&min_year=&max_year=&jobid={job_id}"
+              f"&source=Pubmed&limit=1000&sort=Most+Cited&noreviews=on&min_year=&max_year=&jobid={job_id}"
         summaries_storage = search_queries[job_id][SUMMARIZE_STEP + "_RESULT"]
         summaries = {}
 
